@@ -5,9 +5,12 @@ from typing import Dict, List
 from pydantic import BaseModel
 
 # GitInfo returns branch and is_dirty bool
-class GitInto(BaseModel):
+class GitInfo(BaseModel):
     branch: str | None = None
     is_dirty: bool = False
+    latest_commit: str | None = None
+    latest_commit_message: str | None = None
+    commit_count: int = 0
 
 # AnalysisResult returns project structure
 class AnalysisResult(BaseModel):
@@ -21,4 +24,4 @@ class AnalysisResult(BaseModel):
     fixmes: List[str]
     has_readme: bool
     has_dockerfile: bool
-    git: GitInto | None = None
+    git: GitInfo | None = None

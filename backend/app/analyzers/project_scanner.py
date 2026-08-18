@@ -3,6 +3,7 @@
 # imports
 from pathlib import Path
 from app.models.analysis import AnalysisResult
+from app.analyzers.git_analyzer import analyze_git
 
 # define file extension languages
 LANGUAGE_EXTENSIONS = {
@@ -21,6 +22,21 @@ LANGUAGE_EXTENSIONS = {
     ".md": "Markdown",
 }
 
+SOURCE_CODE_EXTENSIONS = { # used to parse only relevant source files for keyword matches
+    ".py",
+    ".ts",
+    ".tsx",
+    ".js",
+    ".jsx",
+    ".java",
+    ".cs",
+    ".cpp",
+    ".c",
+    ".html",
+    ".css",
+    ".sql",
+}
+
 def scan_project(project_path: str) -> AnalysisResult:
     root = Path(project_path).expanduser().resolve()
 
@@ -34,9 +50,9 @@ def scan_project(project_path: str) -> AnalysisResult:
     directory_count = 0
     total_lines = 0
 
-    languages = dict[str, int] = {}
-    todos = list[str] = []
-    fixmes = list[str] = []
+    languages: dict[str, int] = {}
+    todos: list[str] = []
+    fixmes: list[str] = []
 
     ignored_directories = {
         ".git",
@@ -74,15 +90,20 @@ def scan_project(project_path: str) -> AnalysisResult:
 
             relative_path = path.relative_to(root)
 
-            for line_number, line in enumerate(lines, start=1):
-                if "TODO" in line:
-                    todos.append(f"{relative_path}:{line_number}")
+            # only scan recognized source files for fixme's and todo's
+            if path.suffix.lower() in SOURCE_CODE_EXTENSIONS:
+                for line_number, line in enumerate(lines, start=1):
+                    if "TODO" in line:
+                        todos.append(f"{relative_path}:{line_number}")
 
-                if "FIXME" in line:
-                    fixmes.append(f"{relative_path}:{line_number}")
+                    if "FIXME" in line:
+                        fixmes.append(f"{relative_path}:{line_number}")
 
         except (UnicodeDecodeError, PermissionError, OSError):
             continue
+
+    # gather git info
+    git_info = analyze_git(str(root))
 
     # return results
     return AnalysisResult(
@@ -96,5 +117,5 @@ def scan_project(project_path: str) -> AnalysisResult:
         fixmes=fixmes,
         has_readme=(root / "README.md").exists(),
         has_dockerfile=(root / "Dockerfile").exists(),
-        git=None,
+        git=git_info,
     )
