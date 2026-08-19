@@ -16,14 +16,26 @@ class GitInfo(BaseModel):
 class FileFinding(BaseModel):
     path: str
     lines: int
-    
+
 class FileAnalysis(BaseModel):
     largest_files: list[FileFinding]
     large_files: list[FileFinding]
     empty_files: list[str]
     extension_counts: dict[str, int]
 
-# AnalysisResult returns project structure
+# Framework detection
+class FrameworkDetection(BaseModel):
+    name: str
+    category: str
+    evidence: list[str]
+
+class FrameworkAnalysis(BaseModel):
+    frameworks: list[FrameworkDetection]
+
+
+
+
+# AnalysisResult returns project structure - MAIN RETURN SET
 class AnalysisResult(BaseModel):
     project_name: str
     project_path: str
@@ -37,6 +49,7 @@ class AnalysisResult(BaseModel):
     has_dockerfile: bool
     git: GitInfo | None = None
     files: FileAnalysis
+    frameworks: FrameworkAnalysis
 
 
 
