@@ -4,6 +4,7 @@
 from pathlib import Path
 from app.models.analysis import AnalysisResult
 from app.analyzers.git_analyzer import analyze_git
+from app.analyzers.file_analyzer import analyze_files
 
 # define file extension languages
 LANGUAGE_EXTENSIONS = {
@@ -105,6 +106,9 @@ def scan_project(project_path: str) -> AnalysisResult:
     # gather git info
     git_info = analyze_git(str(root))
 
+    # gather file info
+    file_analysis = analyze_files(str(root))
+
     # return results
     return AnalysisResult(
         project_name=root.name,
@@ -118,4 +122,5 @@ def scan_project(project_path: str) -> AnalysisResult:
         has_readme=(root / "README.md").exists(),
         has_dockerfile=(root / "Dockerfile").exists(),
         git=git_info,
+        files=file_analysis,
     )

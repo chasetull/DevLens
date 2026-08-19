@@ -12,6 +12,17 @@ class GitInfo(BaseModel):
     latest_commit_message: str | None = None
     commit_count: int = 0
 
+# Analyze file data
+class FileFinding(BaseModel):
+    path: str
+    lines: int
+    
+class FileAnalysis(BaseModel):
+    largest_files: list[FileFinding]
+    large_files: list[FileFinding]
+    empty_files: list[str]
+    extension_counts: dict[str, int]
+
 # AnalysisResult returns project structure
 class AnalysisResult(BaseModel):
     project_name: str
@@ -25,3 +36,9 @@ class AnalysisResult(BaseModel):
     has_readme: bool
     has_dockerfile: bool
     git: GitInfo | None = None
+    files: FileAnalysis
+
+
+
+
+    

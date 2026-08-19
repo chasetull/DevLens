@@ -1,2 +1,6 @@
 *inside /backend*
 python -m app.main
+
+*to create python virtual interpreter*
+python3 -m venv .venv
+source .venv/bin/activate
