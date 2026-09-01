@@ -32,6 +32,21 @@ class FrameworkDetection(BaseModel):
 class FrameworkAnalysis(BaseModel):
     frameworks: list[FrameworkDetection]
 
+# Dependency detection
+class DependencyManifest(BaseModel):
+    path: str
+    ecosystem: str
+    package_manager: str | None = None
+    dependencies: int = 0
+    dev_dependencies: int = 0
+    has_lockfile: bool = False
+
+class DependencyAnalysis(BaseModel):
+    manifests: list[DependencyManifest]
+    total_dependencies: int
+    total_dev_dependencies: int
+    package_managers: list[str]
+
 
 
 
@@ -50,6 +65,7 @@ class AnalysisResult(BaseModel):
     git: GitInfo | None = None
     files: FileAnalysis
     frameworks: FrameworkAnalysis
+    dependencies: DependencyAnalysis
 
 
 

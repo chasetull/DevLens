@@ -8,6 +8,7 @@ from app.models.analysis import AnalysisResult
 from app.analyzers.git_analyzer import analyze_git
 from app.analyzers.file_analyzer import analyze_files
 from app.analyzers.framework_detector import detect_frameworks
+from app.analyzers.dependency_analyzer import analyze_dependencies
 
 # define file extension languages
 LANGUAGE_EXTENSIONS = {
@@ -115,6 +116,9 @@ def scan_project(project_path: str) -> AnalysisResult:
     # gather framework info
     framework_analysis = detect_frameworks(str(root))
 
+    # gather dependency info
+    dependency_analysis=analyze_dependencies(str(root))
+
     # return results
     return AnalysisResult(
         project_name=root.name,
@@ -130,4 +134,5 @@ def scan_project(project_path: str) -> AnalysisResult:
         git=git_info,
         files=file_analysis,
         frameworks=framework_analysis,
+        dependencies=dependency_analysis,
     )
