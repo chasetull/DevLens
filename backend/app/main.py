@@ -1,20 +1,18 @@
-# MAIN
+# FASTAPI config
+from fastapi import FastAPI
+from app.api.routes import router
 
-# imports
-from pprint import pprint
+app = FastAPI(
+    title="DevLens API",
+    description="Codebase health and analysis API for DevLens",
+    version="0.1.0",
+)
 
-from app.analyzers.project_scanner import scan_project
+app.include_router(router, prefix="/api/v1")
 
-from app.core.constants import LOCAL_PATH
-
-if __name__ == "__main__":
-    project_path = input("\nEnter project path: ")
-
-    # change project path to local path for easy dev
-    if project_path == "":
-        project_path = LOCAL_PATH
-
-    result = scan_project(project_path)
-
-#    print("------------------- DevLens Info: -------------------\n")
-    pprint(result.model_dump())
+@app.get("/health")
+def health_check():
+    return {
+        "status" : "ok",
+        "service" : "DevLens API",
+    }

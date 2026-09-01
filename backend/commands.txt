@@ -4,3 +4,7 @@ python -m app.main
 *to create python virtual interpreter*
 python3 -m venv .venv
 source .venv/bin/activate
+
+*to start API*
+from /backend run: uvicorn app.main:app --reload
+then navigate to http://127.0.0.1:8000/docs
